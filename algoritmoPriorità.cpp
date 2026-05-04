@@ -1,5 +1,5 @@
 #include <iostream>
-
+#include <fstream>
 using namespace std;
 
 struct Processo
@@ -7,7 +7,6 @@ struct Processo
     int pid;
     int durata;
     int priorita;
-    int arrivo;
     bool completato;
 };
 
@@ -22,7 +21,7 @@ void schedulingPriorità(Processo p[], int n)
 
         for (int i = 0; i < n; i++)
         {
-            if (p[i].arrivo <= tempo && !p[i].completato)
+            if (!p[i].completato)
             {
                 if (scelto == -1 || p[i].priorita < p[scelto].priorita)
                 {
@@ -34,7 +33,7 @@ void schedulingPriorità(Processo p[], int n)
         if (scelto != -1)
         {
             tempo += p[scelto].durata;
-            cout<< p[i].pid;
+            cout<< p[scelto].pid;
             p[scelto].completato = true;
             completati++;
         }
@@ -47,24 +46,25 @@ void schedulingPriorità(Processo p[], int n)
 
 int main()
 {
+    ifstream file("input.txt");
     int n;
-    cout << "Quanti processi? ";
-    cin >> n;
+    file >> n;
 
     Processo p[n];
 
     for (int i = 0; i < n; i++)
-        {
-        p[i].id = i + 1;
-        cout<<"processo "<<p[i].id<<"arrivo, durata, priorità: ";
-        cin>> p[i].pid;
-        cin>> p[i].durata;
-        cin>> p[i].priorita;
+    {
+        getline(file, p[i].pid, " ");
+        cout<<"processo "<<p[i].pid<<"durata, priorità: ";
+        getline(file, p[i].durata, " ");
+        getline(file, p[i].priorità, " ");
         
         p[i].completato = false;
     }
 
     schedulingPriorità(p, n);
+
+    file.close();
 
     return 0;
 }
