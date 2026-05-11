@@ -8,6 +8,7 @@ struct Processo
     int durata;
     int priorita;
     bool completato;
+    int tempo_rimanente;
 };
 
 void schedulingPriorità(Processo p[], int n)
@@ -21,7 +22,7 @@ void schedulingPriorità(Processo p[], int n)
 
         for (int i = 0; i < n; i++)
         {
-            if (!p[i].completato)
+            if (p[i].tempo_rimanente > 0)
             {
                 if (scelto == -1 || p[i].priorita < p[scelto].priorita)
                 {
@@ -32,10 +33,14 @@ void schedulingPriorità(Processo p[], int n)
 
         if (scelto != -1)
         {
-            tempo += p[scelto].durata;
-            cout<< p[scelto].pid;
-            p[scelto].completato = true;
-            completati++;
+            p[scelto].tempo_rimanente--;
+            tempo++;
+            if(p[scelto].tempo_rimanente == 0)
+            {
+                cout<< p[scelto].pid;
+                p[scelto].completato = true;
+                completati++;
+            }
         }
         else
         {
@@ -54,10 +59,11 @@ int main()
 
     for (int i = 0; i < n; i++)
     {
-        getline(file, p[i].pid, " ");
+        file>> p[i].pid;
         cout<<"processo "<<p[i].pid<<"durata, priorità: ";
-        getline(file, p[i].durata, " ");
-        getline(file, p[i].priorità, " ");
+        file>> p[i].durata;
+        p[i].tempo_rimanente = p[i].durata;
+        file>> p[i].priorita;
         
         p[i].completato = false;
     }
